@@ -38,6 +38,7 @@
 #include <laser_scan_matcher/laser_scan_matcher.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <boost/assign.hpp>
+#include "nav_msgs/Odometry.h"
 
 namespace scan_tools
 {
@@ -81,6 +82,7 @@ LaserScanMatcher::LaserScanMatcher(ros::NodeHandle nh, ros::NodeHandle nh_privat
   {
     pose_stamped_publisher_ = nh_.advertise<geometry_msgs::PoseStamped>(
       "pose_stamped", 5);
+    odom_stamped_publisher_ = nh_.advertise<nav_msgs::Odometry>("lidar_odometry_stamped", 5);
   }
 
   if (publish_pose_with_covariance_)
@@ -93,6 +95,7 @@ LaserScanMatcher::LaserScanMatcher(ros::NodeHandle nh, ros::NodeHandle nh_privat
   {
     pose_with_covariance_stamped_publisher_ = nh_.advertise<geometry_msgs::PoseWithCovarianceStamped>(
       "pose_with_covariance_stamped", 5);
+    odom_with_covariance_stamped_publisher_ = nh_.advertise<nav_msgs::Odometry>("lidar_odometry_with_covariance_stamped", 5);
   }
 
   // *** subscribers
@@ -524,6 +527,7 @@ void LaserScanMatcher::processScan(LDP& curr_ldp_scan, const ros::Time& time)
     {
       // stamped Pose message
       geometry_msgs::PoseStamped::Ptr pose_stamped_msg;
+      nav_msgs::Odometry odom_msg_without_covariance;
       pose_stamped_msg = boost::make_shared<geometry_msgs::PoseStamped>();
 
       pose_stamped_msg->header.stamp    = time;
@@ -531,7 +535,11 @@ void LaserScanMatcher::processScan(LDP& curr_ldp_scan, const ros::Time& time)
 
       tf::poseTFToMsg(f2b_, pose_stamped_msg->pose);
 
+      odom_msg_without_covariance.pose.pose = pose_stamped_msg->pose;
+      odom_msg_without_covariance.header = pose_stamped_msg->header;
+
       pose_stamped_publisher_.publish(pose_stamped_msg);
+      odom_stamped_publisher_.publish(odom_msg_without_covariance);
     }
     if (publish_pose_with_covariance_)
     {
@@ -567,6 +575,8 @@ void LaserScanMatcher::processScan(LDP& curr_ldp_scan, const ros::Time& time)
     {
       // stamped Pose message
       geometry_msgs::PoseWithCovarianceStamped::Ptr pose_with_covariance_stamped_msg;
+      nav_msgs::Odometry odom_with_covariance_stamped_msg;
+
       pose_with_covariance_stamped_msg = boost::make_shared<geometry_msgs::PoseWithCovarianceStamped>();
 
       pose_with_covariance_stamped_msg->header.stamp    = time;
@@ -595,6 +605,10 @@ void LaserScanMatcher::processScan(LDP& curr_ldp_scan, const ros::Time& time)
           (0)  (0)  (0)  (0)  (0)  (static_cast<double>(orientation_covariance_[2]));
       }
 
+      odom_with_covariance_stamped_msg.pose = pose_with_covariance_stamped_msg->pose;
+      odom_with_covariance_stamped_msg.header = pose_with_covariance_stamped_msg->header;
+
+      odom_with_covariance_stamped_publisher_.publish(odom_with_covariance_stamped_msg);
       pose_with_covariance_stamped_publisher_.publish(pose_with_covariance_stamped_msg);
     }
 

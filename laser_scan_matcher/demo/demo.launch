@@ -5,7 +5,7 @@ Example launch file: launches the scan matcher with pre-recorded data
 <launch>
   <arg name="IS_TWISTSTAMPED" default="true" />
   <arg name="use_rviz" default="true" />
-  <arg name="publish_covariance" default="false"/>
+  <arg name="publish_covariance" default="true"/>
   #### set up data playback from bag #############################
 
   <param name="/use_sim_time" value="true"/>

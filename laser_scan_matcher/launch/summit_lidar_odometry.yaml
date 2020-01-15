@@ -1,0 +1,30 @@
+# Summit Xl frames
+base_frame: summit_xl_a_base_footprint
+fixed_frame: summit_xl_a_odom
+
+# Configuration parameter for the lidar odometry
+use_cloud_input: false
+#if use_cloud_input is true, specify the following
+cloud_range_min: 0.1
+cloud_range_max: 50.0
+cloud_res: 0.05
+
+# Keyframe params
+kf_dist_linear: 0.1
+kf_dist_angular: 0.1
+
+
+# What prediction sensors are available to speed up the ICP
+use_imu: false
+use_odom: false
+use_vel: false
+
+# Are velocity input messages stamped
+stamped_vel: false
+
+# How to publish the output
+publish_tf: false
+publish_pose: true
+publish_pose_stamped: true
+publish_pose_with_covariance: true
+publish_pose_with_covariance_stamped: true

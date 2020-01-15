@@ -95,6 +95,8 @@ class LaserScanMatcher
     ros::Publisher  pose_stamped_publisher_;
     ros::Publisher  pose_with_covariance_publisher_;
     ros::Publisher  pose_with_covariance_stamped_publisher_;
+    ros::Publisher  odom_stamped_publisher_;
+    ros::Publisher  odom_with_covariance_stamped_publisher_;
 
     // **** parameters
 
